@@ -222,6 +222,6 @@ except:
     # Popen("python bot.py $", shell=True).wait()
     # os.execv(__file__, sys.argv)
     time.sleep(20)
-    subprocess.call("python bot.py &")
+    subprocess.call(["python", "bot.py", "&"])
 
 # bot.infinity_polling(none_stop=True)
