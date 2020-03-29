@@ -10,7 +10,6 @@ import sys
 import difflib
 import time
 import datetime
-import schedule
 import operator
 import random
 import math
@@ -214,7 +213,6 @@ def daily_recommedations():
                 break
 
 
-# schedule.every().day.at("19:23").do(daily_recommedations)
 
 try:
     bot.polling(none_stop=True, timeout=120)
