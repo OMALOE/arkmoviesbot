@@ -15,6 +15,7 @@ import random
 import math
 from ex import comliment
 import subprocess
+import pyautogui
 
 # apihelper.proxy = {'http': 'http://10.10.1.10:3128'}
 
@@ -22,9 +23,9 @@ admins = ["301483580"]  # admins ids
 password = "anotherrecom"
 bot = telebot.TeleBot("721035899:AAHA3acaXtnePkG9NvlxUk0Ye6wMpjN8mfo")
 # bot = telebot.TeleBot("1121196168:AAHkVLo43bIY4_QGqTiVsslZMSoFbvEXFVk")
-with open("welcome.txt", 'r', encoding='utf-8') as welcome:
-    welcome_text_lines = welcome.readlines()
-welcome_text = "".join(welcome_text_lines)
+# with open("welcome.txt", 'r', encoding='utf-8') as welcome:
+#     welcome_text_lines = welcome.readlines()
+welcome_text = """Карамба!\n Добро пожаловать! Чтобы найти фильм БЕСПЛАТНО просто введи название фильма и бот вышлет тебе то, что он нашел. Тебе просто остается выбрать этот фильм и ждать загрузки! Кроме того, ты будешь получать ежедневные ПЕРСОНАЛЬНЫЕ рекоммендации фильмов! \nПеречень доступных команд можно посмотреть, написав боту /help .\n  ПРИЯТНЫХ ПРОСМОТРОВ! \nP.S.: Наша база фильмов постоянно обновляется, так что если ты не нашел то, что искал, не расстраивайся, бот будет усердно его для тебя искать и пришлет позже! \nP.P.S.: Многие фильмы содержат рекламу всяких казино. Это связано с тем, что фильмы взяты из открытого доступа, поэтому просим прощения за неудобства."""
 @bot.message_handler(commands=['start'])
 def start_message(message):
     bot.send_message(message.chat.id, f"{welcome_text}")
@@ -49,7 +50,7 @@ def message(message):
 @bot.message_handler(content_types=['video'])
 def get_video_id(message):
     if str(message.chat.id) in admins:
-        with open("tele_ids.json", 'r', encoding="utf-8") as ids:
+        with open("ids.json", 'r', encoding="utf-8") as ids:
             ids_list = json.load(ids)
         tele_id = message.video.file_id
         bot.send_message(message.chat.id, f"{tele_id}")
@@ -58,7 +59,7 @@ def get_video_id(message):
         film_num = len(ids_list)
         id_obj = {f"{film_num}": tele_id}
         ids_list.append(id_obj)
-        with open("tele_ids.json", "w", encoding="utf-8") as ids_fin:
+        with open("ids.json", "w", encoding="utf-8") as ids_fin:
             json.dump(ids_list, ids_fin, ensure_ascii=False)
         # file_names = os.listdir(
         #     path=f"C:/Users/Дмитрий/Desktop/WORK/telemovies/vids")
@@ -73,8 +74,11 @@ def extract_arg(arg):
 
 
 @bot.message_handler(commands=["download"])
-def download(message, findex):
+def download(message, findex=None):
     # findex = extract_arg(message.text)
+    if findex == None:
+        bot.send_message(message.chat.id, "Это так не работает! Введите название фильма!")
+        return None
     with open('films.json', 'r', encoding='utf-8') as films:
         films_list = json.load(films)
     # for film in films_list:
@@ -87,7 +91,7 @@ def download(message, findex):
     with open("films.json", 'w', encoding='utf-8') as films:
         json.dump(films_list, films, ensure_ascii=False)
     bot.send_message(
-        message.chat.id, f"""Фильм: <b>{found["title"]}</b> \nГод: {found["year"]} \nРежиссер: {found["directors"]} \nЖанр: {found["genres"]} \nОписание: {found["description"]} \nНравится: {found["likes"]} \n\n""", parse_mode="HTML")
+        message.chat.id, f"""Фильм: <b>{found["title"]}</b> \nГод: {found["year"]} \nРежиссер: {found["directors"]} \nЖанр: {found["genres"]} \nОписание: {found["description"]} \n\n""", parse_mode="HTML")
     bot.send_video(message.chat.id, data=tele_id, supports_streaming=True)
     with open("users.json", 'r', encoding="utf-8") as users:
         users_list = json.load(users)
@@ -135,10 +139,13 @@ def film_request(message):
         #             int(admins[0]), f"""ЕЖЕДНЕВНАЯ РЕКОМЕНДАЦИЯ! \nФильм: {film["title"]} \nГод: {film["year"]} \nРежиссер: {film["directors"]} \nЖанр: {film["genres"]} \nОписание: {film["description"]} \nПОСМОТРЕТЬ: /download_{films_list.index(film)}""", parse_mode='HTML')
         #         break
         # return None
-
+        return None
     if message.text.startswith("/download"):
         findex = int(extract_arg(message.text))
         download(message, findex)
+        return None
+    if message.text.startswith("/help"):
+        help(message)
         return None
 
     with open("films.json", 'r', encoding='utf-8') as films:
@@ -190,6 +197,11 @@ def film_request(message):
     else:
         bot.send_message(
             message.chat.id, f"""{" ".join(findings)}""", parse_mode='HTML')
+    
+@bot.message_handler(commands=["help"])
+def help(message):
+    bot.send_message(
+        message.chat.id, "Перечень команд:\n/help - помощь,\nВот и все команды!)\nДля поддержки и отзывов напишите нам на почту- arkmoviesbot@gmail.com \nПожалуйста, давайте нам знать о надоедливой рекламе в фильмах, и мы их заменим на другие версии без рекламы. Боты пока не самые совершенные ребята, поэтому берут что попало)")
 
 
 def daily_recommedations():
@@ -203,7 +215,7 @@ def daily_recommedations():
         except:
             random_index = random.randint(0, len(films_list) - 1)
             bot.send_message(
-                user["chat_id"], f"""ЕЖЕДНЕВНАЯ РЕКОМЕНДАЦИЯ! \nФильм: {films_list[random_index]["title"]} \nГод: {films_list[random_index]["year"]} \nРежиссер: {films_list[random_index]["directors"]} \nЖанр: {films_list[random_index]["genres"]} \nОписание: {films_list[random_index]["description"]} \nПОСМОТРЕТЬ: /download_{random_index} \nНравится: {films_list[random_index]["likes"]}""", parse_mode='HTML')
+                user["chat_id"], f"""ЕЖЕДНЕВНАЯ РЕКОМЕНДАЦИЯ! \nФильм: {films_list[random_index]["title"]} \nГод: {films_list[random_index]["year"]} \nРежиссер: {films_list[random_index]["directors"]} \nЖанр: {films_list[random_index]["genres"]} \nОписание: {films_list[random_index]["description"]} \nПОСМОТРЕТЬ: /download_{random_index}""", parse_mode='HTML')
             continue
         
         for film in random.sample(films_list, len(films_list)):
@@ -219,7 +231,10 @@ try:
 except:
     # Popen("python bot.py $", shell=True).wait()
     # os.execv(__file__, sys.argv)
-    time.sleep(20)
-    subprocess.call(["python", "bot.py", "&"])
+    # subprocess.call(["python", "bot.py", "&"])
+    # pyautogui.moveTo(524, 25)
+    # pyautogui.click()
+    os.system("python crash.py &")
+    sys.exit()
 
 # bot.infinity_polling(none_stop=True)

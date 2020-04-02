@@ -2,7 +2,7 @@ import json
 
 
 def comliment():
-    with open("tele_ids.json", 'r', encoding="utf-8") as ids:
+    with open("ids.json", 'r', encoding="utf-8") as ids:
         ids_dict = json.load(ids)
     with open("films.json", 'r', encoding="utf-8") as films:
         films_dict = json.load(films)
