@@ -15,7 +15,7 @@ import random
 import math
 from ex import comliment
 import subprocess
-import pyautogui
+# import pyautogui
 
 # apihelper.proxy = {'http': 'http://10.10.1.10:3128'}
 
