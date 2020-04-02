@@ -1,11 +1,11 @@
-import io
+# import io
 import telebot
-from telebot import apihelper
-import selenium
-import asyncio
+# from telebot import apihelper
+# import selenium
+# import asyncio
 import json
 import os
-from subprocess import Popen
+# from subprocess import Popen
 import sys
 import difflib
 import time
