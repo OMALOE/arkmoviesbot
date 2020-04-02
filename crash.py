@@ -1,5 +1,5 @@
 import time
-import pyautogui
+# import pyautogui
 import os
 
 time.sleep(1)
