@@ -2,7 +2,7 @@ import json
 import os
 import sys
 
-with open("films.json", 'r', encoding='utf-8') as films:
+with open("users.json", 'r', encoding='utf-8') as films:
     films_list = json.load(films)
 
 print(len(films_list))
