@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # import io
 import telebot
 # from telebot import apihelper
