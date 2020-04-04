@@ -238,8 +238,12 @@ def recommend(message):
         users_list = json.load(users)
     for user in users_list:
         if user["chat_id"] == message.chat.id:
-            user["recommend"] = !user["recommend"]
-
+            user["recommend"] = not user["recommend"]
+            if user["recommend"] == True:
+                bot.send_message(message.chat.id, "Вы включили персональные рекомендации!")
+            else:
+                bot.send_message(message.chat.id, "Вы отключили персональные рекомендации!")
+            break
 
 try:
     bot.polling(none_stop=True, timeout=120)
