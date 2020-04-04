@@ -155,7 +155,7 @@ def film_request(message):
         help(message)
         return None
 
-    if message.text.startswith(/recommend):
+    if message.text.startswith("/recommend"):
         recommend(message)
         return None
 
