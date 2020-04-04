@@ -155,6 +155,10 @@ def film_request(message):
         help(message)
         return None
 
+    if message.text.startswith(/recommend):
+        recommend(message)
+        return None
+
     with open("films.json", 'r', encoding='utf-8') as films:
         films_list = json.load(films)
     request = message.text
