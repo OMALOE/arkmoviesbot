@@ -39,7 +39,12 @@ def start_message(message):
         "total_watch": 0,
         "recommend": True
     }
-    users_list.append(user_data)
+    Iam_in = False
+    for user in users_list:
+        if user["chat_id"] == message.chat.id:
+            Iam_in = True
+    if Iam_in == False:
+        users_list.append(user_data)
     with open("users.json", "w", encoding='utf-8') as users:
         json.dump(users_list, users, ensure_ascii=False)
 
@@ -218,15 +223,22 @@ def daily_recommedations():
             except:
                 random_index = random.randint(0, len(films_list) - 1)
                 bot.send_message(
-                    user["chat_id"], f"""ЕЖЕДНЕВНАЯ РЕКОМЕНДАЦИЯ! \nФильм: {films_list[random_index]["title"]} \nГод: {films_list[random_index]["year"]} \nРежиссер: {films_list[random_index]["directors"]} \nЖанр: {films_list[random_index]["genres"]} \nОписание: {films_list[random_index]["description"]} \nПОСМОТРЕТЬ: /download_{random_index}""", parse_mode='HTML')
+                    user["chat_id"], f"""ПЕРСОНАЛЬНАЯ РЕКОМЕНДАЦИЯ! \nФильм: {films_list[random_index]["title"]} \nГод: {films_list[random_index]["year"]} \nРежиссер: {films_list[random_index]["directors"]} \nЖанр: {films_list[random_index]["genres"]} \nОписание: {films_list[random_index]["description"]} \nПОСМОТРЕТЬ: /download_{random_index}""", parse_mode='HTML')
                 continue
             
             for film in random.sample(films_list, len(films_list)):
                 if (film["title"] not in user['seen']) and f'{favorite}' in film["genres"] and film["tele_id"] != None:
                     bot.send_message(
-                        user["chat_id"], f"""ЕЖЕДНЕВНАЯ РЕКОМЕНДАЦИЯ! \nФильм: {film["title"]} \nГод: {film["year"]} \nРежиссер: {film["directors"]} \nЖанр: {film["genres"]} \nОписание: {film["description"]} \nПОСМОТРЕТЬ: /download_{films_list.index(film)}""", parse_mode='HTML')
+                        user["chat_id"], f"""ПЕРСОНАЛЬНАЯ РЕКОМЕНДАЦИЯ! \nФильм: {film["title"]} \nГод: {film["year"]} \nРежиссер: {film["directors"]} \nЖанр: {film["genres"]} \nОписание: {film["description"]} \nПОСМОТРЕТЬ: /download_{films_list.index(film)}""", parse_mode='HTML')
                     break
 
+@bot.message_handler(commands=["recommend"])
+def recommend(message):
+    with open("users.json") as users:
+        users_list = json.load(users)
+    for user in users_list:
+        if user["chat_id"] == message.chat.id:
+            user["recommend"] = !user["recommend"]
 
 
 try:
