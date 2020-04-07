@@ -265,3 +265,4 @@ except:
     sys.exit()
 
 # bot.infinity_polling(none_stop=True)
+#opa
