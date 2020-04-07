@@ -249,8 +249,8 @@ def recommend(message):
                 bot.send_message(message.chat.id, "Вы отключили персональные рекомендации!")
             break
 
-    with open("users.json", 'w', encoding="utf-8") as users:
-        json.dump(users, users_list)
+    with open("users.json", "w", encoding='utf-8') as users:
+        json.dump(users_list, users, ensure_ascii=False)
 
 
 try:
